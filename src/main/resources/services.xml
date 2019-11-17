@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN"
+        "http://www.springframework.org/dtd/spring-beans.dtd">
+<beans>
+    <!--this file is not used ,but this project is evolved from this.  -->
+    <!-- 引入XFire预配置信息 -->
+    <import resource="classpath:org/codehaus/xfire/spring/xfire.xml" />
+    <bean class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+        <property name="urlMap">
+            <map>
+                <entry key="/robotApiService">
+                    <ref bean="HelloWorldService" />
+                </entry>
+            </map>
+        </property>
+    </bean>
+
+    <bean id="xfire.serviceRegistry"
+          class="org.codehaus.xfire.service.DefaultServiceRegistry"/>
+
+    <bean id="xfire.transportManager"
+          class="org.codehaus.xfire.transport.DefaultTransportManager"
+          init-method="initialize" destroy-method="dispose">
+    </bean>
+
+    <bean id="xfire" class="org.codehaus.xfire.DefaultXFire">
+        <constructor-arg index="0">
+            <ref bean="xfire.serviceRegistry" />
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="xfire.transportManager" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="xfire.typeMappingRegistry"
+          class="org.codehaus.xfire.aegis.type.DefaultTypeMappingRegistry"
+          init-method="createDefaultMappings">
+    </bean>
+
+    <bean id="xfire.aegisBindingProvider"
+          class="org.codehaus.xfire.aegis.AegisBindingProvider">
+        <constructor-arg index="0">
+            <ref bean="xfire.typeMappingRegistry" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="xfire.serviceFactory"
+          class="org.codehaus.xfire.service.binding.ObjectServiceFactory">
+        <constructor-arg index="0">
+            <ref bean="xfire.transportManager" />
+        </constructor-arg>
+        <constructor-arg index="1">
+            <ref bean="xfire.aegisBindingProvider" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="xfire.servletController"
+          class="org.codehaus.xfire.transport.http.XFireServletController">
+        <constructor-arg>
+            <ref bean="xfire" />
+        </constructor-arg>
+    </bean>
+
+    <bean id="xfire.messageServiceFactory"
+          class="org.codehaus.xfire.service.binding.ObjectServiceFactory">
+        <constructor-arg index="0" ref="xfire.transportManager" />
+        <constructor-arg index="1" ref="xfire.messageBindingProvider" />
+        <property name="style" value="message" />
+    </bean>
+
+    <bean id="xfire.messageBindingProvider"
+          class="org.codehaus.xfire.service.binding.MessageBindingProvider" />
+
+    <!-- 使用XFire导出器 -->
+    <bean id="baseWebService" class="org.codehaus.xfire.spring.remoting.XFireExporter" lazy-init="false" abstract="true">
+        <!-- 引用xfire.xml中定义的工厂 -->
+        <property name="serviceFactory" ref="xfire.serviceFactory" />
+        <!-- 引用xfire.xml中的xfire实例 -->
+        <property name="xfire" ref="xfire" />
+    </bean>
+
+    <bean id="HelloWorldService" parent="baseWebService">
+        <!-- 业务服务bean -->
+        <property name="serviceBean" ref="pasService" />
+
+        <!-- 业务服务bean的窄接口类 -->
+        <property name="serviceClass" value="com.itkingk.springbootxfire.service.RobotApiService" />
+    </bean>
+
+    <bean id="pasService" class="com.itkingk.springbootxfire.service.impl.RobotApiServiceImpl"/>
+
+</beans>

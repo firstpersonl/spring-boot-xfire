@@ -1,0 +1,49 @@
+<wsdl:definitions xmlns:soapenc11="http://schemas.xmlsoap.org/soap/encoding/" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:tns="http://service.springbootxfire.itkingk.com" xmlns:soap12="http://www.w3.org/2003/05/soap-envelope" xmlns:wsdlsoap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:soap11="http://schemas.xmlsoap.org/soap/envelope/" xmlns:soapenc12="http://www.w3.org/2003/05/soap-encoding" targetNamespace="http://service.springbootxfire.itkingk.com">
+    <wsdl:types>
+        <xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema" attributeFormDefault="qualified" elementFormDefault="qualified" targetNamespace="http://service.springbootxfire.itkingk.com">
+            <xsd:element name="syncTaskType">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="in0" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+            <xsd:element name="syncTaskTypeResponse">
+                <xsd:complexType>
+                    <xsd:sequence>
+                        <xsd:element maxOccurs="1" minOccurs="1" name="out" nillable="true" type="xsd:string"/>
+                    </xsd:sequence>
+                </xsd:complexType>
+            </xsd:element>
+        </xsd:schema>
+    </wsdl:types>
+    <wsdl:message name="syncTaskTypeRequest">
+        <wsdl:part name="parameters" element="tns:syncTaskType"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:message name="syncTaskTypeResponse">
+        <wsdl:part name="parameters" element="tns:syncTaskTypeResponse"> </wsdl:part>
+    </wsdl:message>
+    <wsdl:portType name="robotApiServicePortType">
+        <wsdl:operation name="syncTaskType">
+            <wsdl:input name="syncTaskTypeRequest" message="tns:syncTaskTypeRequest"> </wsdl:input>
+            <wsdl:output name="syncTaskTypeResponse" message="tns:syncTaskTypeResponse"> </wsdl:output>
+        </wsdl:operation>
+    </wsdl:portType>
+    <wsdl:binding name="robotApiServiceHttpBinding" type="tns:robotApiServicePortType">
+        <wsdlsoap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
+        <wsdl:operation name="syncTaskType">
+            <wsdlsoap:operation soapAction=""/>
+            <wsdl:input name="syncTaskTypeRequest">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:input>
+            <wsdl:output name="syncTaskTypeResponse">
+                <wsdlsoap:body use="literal"/>
+            </wsdl:output>
+        </wsdl:operation>
+    </wsdl:binding>
+    <wsdl:service name="robotApiService">
+        <wsdl:port name="robotApiServiceHttpPort" binding="tns:robotApiServiceHttpBinding">
+            <wsdlsoap:address location="http://127.0.0.1:8080/webservice/robotApiService"/>
+        </wsdl:port>
+    </wsdl:service>
+</wsdl:definitions>
